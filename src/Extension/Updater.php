@@ -1,7 +1,7 @@
 <?php
 /*
- * @package     RadicalMart Package
- * @subpackage  plg_system_radicalmart
+ * @package     RadicalMart Updater Plugin
+ * @subpackage  plg_radicalmart_updater
  * @version     __DEPLOY_VERSION__
  * @author      RadicalMart Team - radicalmart.ru
  * @copyright   Copyright (c) 2025 RadicalMart. All rights reserved.
