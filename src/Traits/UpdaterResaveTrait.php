@@ -16,19 +16,12 @@ namespace Joomla\Plugin\RadicalMart\Updater\Traits;
 use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Component\RadicalMart\Administrator\Helper\CommandsHelper;
-use Joomla\Component\RadicalMart\Administrator\Helper\ParamsHelper;
-use Joomla\Component\RadicalMart\Administrator\Helper\UserHelper;
-use Joomla\Component\RadicalMart\Administrator\Traits\LoadSuperUserIdentityCommandTrait;
-use Joomla\Component\RadicalMart\Site\Helper\RouteHelper;
-use Joomla\Component\RadicalMart\Site\Mapping\CategoryMapping;
-use Joomla\Component\RadicalMart\Site\Mapping\ProductMapping;
-use Joomla\Database\DatabaseAwareTrait;
+use Joomla\Component\RadicalMart\Administrator\Traits\UtilitiesCommandTrait;
 
 trait UpdaterResaveTrait
 {
 	use MVCFactoryAwareTrait;
-	use DatabaseAwareTrait;
-	use LoadSuperUserIdentityCommandTrait;
+	use UtilitiesCommandTrait;
 
 	/**
 	 * Method to resave RadicalMart items.
@@ -45,15 +38,19 @@ trait UpdaterResaveTrait
 		$this->loadSuperUserIdentity();
 
 		$this->ioStyle->text('Get total items');
-		$this->ioStyle->progressStart(1);
+		$this->startProgressBar();
 		$total = CommandsHelper::getTotalItems($table);
-		$this->ioStyle->progressFinish();
+		$this->finishProgressBar();
+
+		if ($total === 0)
+		{
+			$this->ioStyle->note('No items found in `' . $table . '`');
+
+			return;
+		}
 
 		$this->ioStyle->text('Items advance');
-		$progress = $this->ioStyle->createProgressBar($total);
-		$progress->setFormat(' Time: %elapsed:6s% | Remaining: %remaining% '
-			. PHP_EOL . ' %current%/%max% [%bar%]%percent:3s%% ');
-		$progress->start();
+		$this->startProgressBar($total, true);
 
 		$last  = 0;
 		$limit = 100;
@@ -97,16 +94,11 @@ trait UpdaterResaveTrait
 				$data  = null;
 				$model = null;
 
-				$progress->advance();
+				$this->advanceProgressBar();
 			}
 
 			// Clean RAM
-			$this->getDatabase()->disconnect();
-			ParamsHelper::reset();
-			CategoryMapping::reset();
-			ProductMapping::reset();
-			RouteHelper::reset();
-			UserHelper::reset();
+			$this->cleanRadicalMartRAM();
 
 			if (count($pks) < $limit)
 			{
@@ -114,7 +106,6 @@ trait UpdaterResaveTrait
 			}
 		}
 
-		$progress->finish();
-		$this->ioStyle->newLine(2);
+		$this->finishProgressBar();
 	}
 }

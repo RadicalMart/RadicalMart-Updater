@@ -11,14 +11,14 @@
 
 namespace Joomla\Plugin\RadicalMart\Updater\Traits;
 
-use Joomla\Database\DatabaseAwareTrait;
-use Joomla\Utilities\ArrayHelper;
-
 \defined('_JEXEC') or die;
+
+use Joomla\Component\RadicalMart\Administrator\Traits\UtilitiesCommandTrait;
+use Joomla\Utilities\ArrayHelper;
 
 trait UpdaterDatabaseTrait
 {
-	use DatabaseAwareTrait;
+	use UtilitiesCommandTrait;
 
 	/**
 	 * Method to check and create table columns and indexes.
@@ -37,7 +37,7 @@ trait UpdaterDatabaseTrait
 		$columns = array_keys($db->getTableColumns($table));
 		$indexes = ArrayHelper::getColumn($db->getTableKeys($table), 'Key_name');
 
-		$this->ioStyle->progressStart(count($newColumns) + count($newIndexes));
+		$this->startProgressBar(count($newColumns) + count($newIndexes), true);
 		foreach ($newColumns as $column_name => $column_type)
 		{
 			if (!in_array($column_name, $columns))
@@ -48,7 +48,7 @@ trait UpdaterDatabaseTrait
 				)->execute();
 			}
 
-			$this->ioStyle->progressAdvance();
+			$this->advanceProgressBar();
 		}
 		foreach ($newIndexes as $index_name => $index_columns)
 		{
@@ -59,10 +59,10 @@ trait UpdaterDatabaseTrait
 					. ' (' . implode(', ', $index_columns) . ');')
 					->execute();
 			}
-			$this->ioStyle->progressAdvance();
+			$this->advanceProgressBar();
 		}
 
-		$this->ioStyle->progressFinish();
+		$this->finishProgressBar();
 	}
 
 	/**
@@ -80,7 +80,7 @@ trait UpdaterDatabaseTrait
 
 		$db      = $this->getDatabase();
 		$columns = array_keys($db->getTableColumns($table));
-		$this->ioStyle->progressStart(count($dropColumns) + count($dropIndexes));
+		$this->startProgressBar(count($dropColumns) + count($dropIndexes), true);
 		foreach ($dropColumns as $dropColumn)
 		{
 			if (in_array($dropColumn, $columns))
@@ -89,7 +89,7 @@ trait UpdaterDatabaseTrait
 					. $db->quoteName($dropColumn))->execute();
 			}
 
-			$this->ioStyle->progressAdvance();
+			$this->advanceProgressBar();
 		}
 
 		$indexes = ArrayHelper::getColumn($db->getTableKeys($table), 'Key_name');
@@ -100,10 +100,10 @@ trait UpdaterDatabaseTrait
 				$db->setQuery('drop index ' . $dropIndex . ' on ' . $db->quoteName($table))->execute();
 			}
 
-			$this->ioStyle->progressAdvance();
+			$this->advanceProgressBar();
 		}
 
-		$this->ioStyle->progressFinish();
+		$this->finishProgressBar();
 	}
 
 	/**
@@ -116,7 +116,7 @@ trait UpdaterDatabaseTrait
 	protected function databaseDropTables(array $tables = []): void
 	{
 		$this->ioStyle->text('Drop tables');
-		$this->ioStyle->progressStart(count($tables));
+		$this->startProgressBar(count($tables));
 		$db = $this->getDatabase();
 		foreach ($tables as $table)
 		{
@@ -133,10 +133,10 @@ trait UpdaterDatabaseTrait
 			{
 				$db->dropTable($table);
 			}
-			$this->ioStyle->progressAdvance();
+			$this->advanceProgressBar();
 		}
 
-		$this->ioStyle->progressFinish();
+		$this->finishProgressBar();
 	}
 
 	/**

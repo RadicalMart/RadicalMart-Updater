@@ -94,21 +94,25 @@ class RadicalMart300 extends AbstractCommand
 		);
 
 		$this->ioStyle->text('Get total items');
-		$this->ioStyle->progressStart(1);
+		$this->startProgressBar();
 		$total = CommandsHelper::getTotalItems('#__radicalmart_products');
-		$this->ioStyle->progressFinish();
-
-		// Paste data to new columns
-		$this->ioStyle->text('Past data to new columns');
-		$this->ioStyle->progressStart($total);
+		$this->finishProgressBar();
+		if ($total === 0)
+		{
+			$this->ioStyle->note('Products not found');
+		}
 
 		if (!$select = $this->databaseGetRudimentalSelect('#__radicalmart_products',
 			['categories', 'pathway', 'ordering'], ['id', 'category']))
 		{
-			$this->ioStyle->progressFinish();
+			$this->ioStyle->note('Products structure is correct');
 
 			return;
 		}
+
+		// Paste data to new columns
+		$this->ioStyle->text('Past data to new columns');
+		$this->startProgressBar($total, true);
 
 		$db    = $this->getDatabase();
 		$last  = 0;
@@ -188,18 +192,18 @@ class RadicalMart300 extends AbstractCommand
 					}
 				}
 
-				$this->ioStyle->progressAdvance();
+				$this->advanceProgressBar();
 			}
 
 			// Clean RAM
-			$db->disconnect();
+			$this->cleanRadicalMartRAM();
 
 			if (count($products) < $limit)
 			{
 				break;
 			}
 		}
-		$this->ioStyle->progressFinish();
+		$this->finishProgressBar();
 
 		// Drop columns in products database
 		$this->databaseDropColumns('#__radicalmart_products',
@@ -252,21 +256,27 @@ class RadicalMart300 extends AbstractCommand
 		);
 
 		$this->ioStyle->text('Get total items');
-		$this->ioStyle->progressStart(1);
+		$this->startProgressBar();
 		$total = CommandsHelper::getTotalItems('#__radicalmart_metas');
-		$this->ioStyle->progressFinish();
+		$this->finishProgressBar();
 
-		// Paste data to new columns
-		$this->ioStyle->text('Past data to new columns');
-		$this->ioStyle->progressStart($total);
+		if ($total === 0)
+		{
+			$this->ioStyle->note('Meta products not found');
+		}
 
 		if (!$select = $this->databaseGetRudimentalSelect('#__radicalmart_metas',
 			['categories', 'ordering'], ['id', 'category', 'products', 'params', 'created']))
 		{
-			$this->ioStyle->progressFinish();
+			$this->ioStyle->note('Metas structure is correct');
 
 			return;
 		}
+
+
+		// Paste data to new columns
+		$this->ioStyle->text('Past data to new columns');
+		$this->startProgressBar($total, true);
 
 		$db    = $this->getDatabase();
 		$last  = 0;
@@ -387,18 +397,17 @@ class RadicalMart300 extends AbstractCommand
 					->whereIn($db->quoteName('id'), $products_ids);
 				$db->setQuery($query)->execute();
 
-				$this->ioStyle->progressAdvance();
+				$this->advanceProgressBar();
 			}
 
-			// Clean RAM
-			$db->disconnect();
+			$this->cleanRadicalMartRAM();
 
 			if (count($metas) < $limit)
 			{
 				break;
 			}
 		}
-		$this->ioStyle->progressFinish();
+		$this->finishProgressBar();
 
 		// Drop columns in products database
 		$this->databaseDropColumns('#__radicalmart_metas',
