@@ -16,12 +16,12 @@ namespace Joomla\Plugin\RadicalMart\Updater\Traits;
 use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Component\RadicalMart\Administrator\Helper\CommandsHelper;
-use Joomla\Component\RadicalMart\Administrator\Traits\UtilitiesCommandTrait;
+use Joomla\Component\RadicalMart\Administrator\Traits\Command\UtilitiesTrait;
 
 trait UpdaterResaveTrait
 {
 	use MVCFactoryAwareTrait;
-	use UtilitiesCommandTrait;
+	use UtilitiesTrait;
 
 	/**
 	 * Method to resave RadicalMart items.

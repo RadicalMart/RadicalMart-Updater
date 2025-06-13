@@ -13,12 +13,12 @@ namespace Joomla\Plugin\RadicalMart\Updater\Traits;
 
 \defined('_JEXEC') or die;
 
-use Joomla\Component\RadicalMart\Administrator\Traits\UtilitiesCommandTrait;
+use Joomla\Component\RadicalMart\Administrator\Traits\Command\UtilitiesTrait;
 use Joomla\Utilities\ArrayHelper;
 
 trait UpdaterDatabaseTrait
 {
-	use UtilitiesCommandTrait;
+	use UtilitiesTrait;
 
 	/**
 	 * Method to check and create table columns and indexes.
