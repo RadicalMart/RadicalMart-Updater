@@ -62,11 +62,34 @@ class RadicalMart300 extends AbstractCommand
 	 * @since __DEPLOY_VERSION__
 	 */
 	protected array $methods = [
+		'updateAlphaStructures',
 		'updateProductsStructure',
 		'updateMetasStructure',
 		'resaveProducts',
-		'resaveMetas'
+		'resaveMetas',
 	];
+
+	/**
+	 * Method to update products database structure.
+	 *
+	 * @throws \Exception
+	 *
+	 *
+	 * @since __DEPLOY_VERSION__
+	 */
+	protected function updateAlphaStructures(): void
+	{
+		$this->ioStyle->title('Update for Alpha versions');
+
+		// Add columns to products database
+		$this->databaseCreateColumns('#__radicalmart_categories_items',
+			[
+			],
+			[
+				'idx_category_ordering' => ['`category_id`', '`ordering` asc']
+			]
+		);
+	}
 
 	/**
 	 * Method to update products database structure.
