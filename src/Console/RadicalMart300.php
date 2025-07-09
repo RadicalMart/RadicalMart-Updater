@@ -86,7 +86,8 @@ class RadicalMart300 extends AbstractCommand
 			[
 			],
 			[
-				'idx_category_ordering' => ['`category_id`', '`ordering` asc']
+				'idx_category_ordering_asc'  => ['`category_id`', '`ordering` asc'],
+				'idx_category_ordering_desc' => ['`category_id`', '`ordering` desc'],
 			]
 		);
 	}
