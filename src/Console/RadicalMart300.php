@@ -70,6 +70,7 @@ class RadicalMart300 extends AbstractCommand
 		'updateProductsStructure',
 		'updateMetasStructure',
 		'updateCategoriesStructure',
+		'updateFieldsStructure',
 		'resaveProducts',
 		'resaveMetas',
 	];
@@ -373,7 +374,6 @@ class RadicalMart300 extends AbstractCommand
 			return;
 		}
 
-
 		// Paste data to new columns
 		$this->ioStyle->text('Past data to new columns');
 		$this->startProgressBar($total, true);
@@ -535,7 +535,7 @@ class RadicalMart300 extends AbstractCommand
 	 */
 	protected function updateCategoriesStructure(): void
 	{
-		$this->ioStyle->title('Update meta products structure');
+		$this->ioStyle->title('Update categories structure');
 
 		$this->ioStyle->text('Get columns');
 		$this->startProgressBar();
@@ -556,6 +556,56 @@ class RadicalMart300 extends AbstractCommand
 		$db->setQuery('alter table ' . $db->quoteName($table) . 'modify ' . $db->quoteName('fields')
 			. ' text null')->execute();
 		$this->finishProgressBar();
+		$db->disconnect();
+	}
+
+	/**
+	 * Method to update fields database structure.
+	 *
+	 * @throws \Exception
+	 *
+	 * @since __DEPLOY_VERSION__
+	 */
+	protected function updateFieldsStructure(): void
+	{
+		$this->ioStyle->title('Update fields structure');
+
+		$this->ioStyle->text('Get columns');
+		$this->startProgressBar();
+		$db      = $this->getDatabase();
+		$table   = '#__radicalmart_fields';
+		$columns = $db->getTableColumns($table);
+		$this->finishProgressBar();
+
+		if (!isset($columns['fieldset']))
+		{
+			$this->ioStyle->note('Fields structure is correct');
+
+			return;
+		}
+
+		$this->databaseCreateColumns($table,
+			[
+				'fieldset_site'          => 'int(11) unsigned NOT NULL DEFAULT 0 after `plugin`',
+				'fieldset_administrator' => 'int(11) unsigned NOT NULL DEFAULT 0 after `plugin`',
+			],
+			[
+				'idx_fieldset_site'          => ['`fieldset_site`'],
+				'idx_fieldset_administrator' => ['`fieldset_administrator`'],
+			]
+		);
+
+		$this->ioStyle->text('Update data');
+		$this->startProgressBar();
+		$query = $db->getQuery(true)
+			->update($db->quoteName($table))
+			->set($db->quoteName('fieldset_site') . ' = ' . $db->quoteName('fieldset'))
+			->set($db->quoteName('fieldset_administrator') . ' = ' . $db->quoteName('fieldset'));
+		$db->setQuery($query)->execute();
+		$this->finishProgressBar();
+
+		$this->databaseDropColumns($table, ['fieldset'], ['idx_fieldset']);
+
 		$db->disconnect();
 	}
 
