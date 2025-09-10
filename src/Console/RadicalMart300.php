@@ -18,12 +18,14 @@ use Joomla\Component\RadicalMart\Administrator\Console\AbstractCommand;
 use Joomla\Component\RadicalMart\Administrator\Helper\CommandsHelper;
 use Joomla\Database\ParameterType;
 use Joomla\Plugin\RadicalMart\Updater\Traits\UpdaterDatabaseTrait;
+use Joomla\Plugin\RadicalMart\Updater\Traits\UpdaterParamsTrait;
 use Joomla\Plugin\RadicalMart\Updater\Traits\UpdaterResaveTrait;
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 
 class RadicalMart300 extends AbstractCommand
 {
+	use UpdaterParamsTrait;
 	use UpdaterDatabaseTrait;
 	use UpdaterResaveTrait;
 
@@ -63,17 +65,19 @@ class RadicalMart300 extends AbstractCommand
 	 */
 	protected array $methods = [
 		'updateAlphaStructures',
+		'updateComponentParams',
+		'updateUsersColumns',
 		'updateProductsStructure',
 		'updateMetasStructure',
+		'updateCategoriesStructure',
 		'resaveProducts',
 		'resaveMetas',
 	];
 
 	/**
-	 * Method to update products database structure.
+	 * Method to update alpha database structure.
 	 *
 	 * @throws \Exception
-	 *
 	 *
 	 * @since __DEPLOY_VERSION__
 	 */
@@ -90,6 +94,79 @@ class RadicalMart300 extends AbstractCommand
 				'idx_category_ordering_desc' => ['`category_id`', '`ordering` desc'],
 			]
 		);
+	}
+
+	/**
+	 * Method to update radicalmart params.
+	 *
+	 * @throws \Exception
+	 *
+	 * @since __DEPLOY_VERSION__
+	 */
+	protected function updateComponentParams(): void
+	{
+		$this->ioStyle->title('Update RadicalMart Params');
+
+		$this->paramsMoveParams([
+			'user_login_code'    => 'login_code',
+			'user_login_timeout-> login_code_timeout',
+			'user_login_length'  => 'login_code_length',
+			'user_login_symbols' => 'login_code_symbols',
+			'user_ip'            => 'privacy_ip',
+			'user_client'        => 'privancy_client',
+			'user_menu'          => 'user_menu_additional',
+		]);
+	}
+
+	/**
+	 * Method to remove unsigned from created_by and modified_by.
+	 *
+	 * @since __DEPLOY_VERSION__
+	 */
+	protected function updateUsersColumns(): void
+	{
+		$this->ioStyle->title('Update users columns');
+
+		$tables = [
+			'#__radicalmart_products',
+			'#__radicalmart_metas',
+			'#__radicalmart_orders',
+		];
+
+		$db = $this->getDatabase();
+		foreach ($tables as $table)
+		{
+			$this->ioStyle->text('Update `' . $table . '` table');
+			$columns = $db->getTableColumns($table);
+			$this->ioStyle->text('Update columns');
+			$this->startProgressBar(2);
+			foreach (['created_by', 'modified_by'] as $column)
+			{
+				if (!isset($columns[$column]) || !str_contains($columns[$column], 'unsigned'))
+				{
+					$this->advanceProgressBar();
+					continue;
+				}
+				$db->setQuery('alter table ' . $db->quoteName($table) . 'modify ' . $db->quoteName($column)
+					. ' int(10) default 0 not null')->execute();
+				$this->advanceProgressBar();
+			}
+
+			$this->finishProgressBar();
+			$indexes = $db->getTableKeys($table);
+			foreach ($indexes as $index)
+			{
+				if ($index->Key_name === 'idx_createdby')
+				{
+					$this->databaseDropColumns($table, [], ['idx_createdby']);
+					$this->databaseCreateColumns($table, [], ['idx_created_by' => ['`created_by`']]);
+					break;
+				}
+			}
+			$this->advanceProgressBar();
+		}
+
+		$db->disconnect();
 	}
 
 	/**
@@ -252,7 +329,6 @@ class RadicalMart300 extends AbstractCommand
 	 * Method to update metas database structure.
 	 *
 	 * @throws \Exception
-	 *
 	 *
 	 * @since __DEPLOY_VERSION__
 	 */
@@ -448,6 +524,39 @@ class RadicalMart300 extends AbstractCommand
 
 		// Drop `#__radicalmart_meta_categories` mapping table
 		$this->databaseDropTables(['#__radicalmart_metas_categories']);
+	}
+
+	/**
+	 * Method to update categories database structure.
+	 *
+	 * @throws \Exception
+	 *
+	 * @since __DEPLOY_VERSION__
+	 */
+	protected function updateCategoriesStructure(): void
+	{
+		$this->ioStyle->title('Update meta products structure');
+
+		$this->ioStyle->text('Get columns');
+		$this->startProgressBar();
+		$db      = $this->getDatabase();
+		$table   = '#__radicalmart_categories';
+		$columns = $db->getTableColumns($table);
+		$this->finishProgressBar();
+
+		if ($columns['fields'] === 'text')
+		{
+			$this->ioStyle->note('Categories structure is correct');
+
+			return;
+		}
+
+		$this->ioStyle->text('Update columns');
+		$this->startProgressBar();
+		$db->setQuery('alter table ' . $db->quoteName($table) . 'modify ' . $db->quoteName('fields')
+			. ' text null')->execute();
+		$this->finishProgressBar();
+		$db->disconnect();
 	}
 
 	/**

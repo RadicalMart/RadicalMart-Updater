@@ -106,6 +106,11 @@ trait UpdaterDatabaseTrait
 		$this->finishProgressBar();
 	}
 
+	protected function databaseModifyTableColumns(string $table, array $columns = [])
+	{
+
+	}
+
 	/**
 	 * Method to drop  database tables if exists.
 	 *
