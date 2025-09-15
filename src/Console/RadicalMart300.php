@@ -186,7 +186,8 @@ class RadicalMart300 extends AbstractCommand
 		$this->databaseCreateColumns('#__radicalmart_products',
 			[
 				'category_pathway'      => 'int(10) unsigned NOT NULL DEFAULT 0 after `category`',
-				'categories_additional' => 'text NULL after `category_pathway`',
+				'category_route'        => 'int(10) unsigned NOT NULL DEFAULT 0 after `category_pathway`',
+				'categories_additional' => 'text NULL after `category_route`',
 				'categories_all'        => 'text NULL after `categories_additional`',
 				'meta_variability'      => 'int(10) unsigned NOT NULL DEFAULT 0 after `categories_all`',
 			],
@@ -340,7 +341,8 @@ class RadicalMart300 extends AbstractCommand
 		$this->databaseCreateColumns('#__radicalmart_metas',
 			[
 				'category_pathway'      => 'int(10) unsigned NOT NULL DEFAULT 0 after `category`',
-				'categories_additional' => 'text NULL after `category`',
+				'category_route'        => 'int(10) unsigned NOT NULL DEFAULT 0 after `category_pathway`',
+				'categories_additional' => 'text NULL after `category_route`',
 				'categories_all'        => 'text NULL after `categories_additional`',
 				'created_by'            => 'int(10) unsigned  NOT NULL DEFAULT 0 after `created`',
 				'modified'              => 'datetime NULL  after `created_by`',

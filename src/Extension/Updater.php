@@ -13,27 +13,9 @@ namespace Joomla\Plugin\RadicalMart\Updater\Extension;
 
 \defined('_JEXEC') or die;
 
-use Joomla\Application\ApplicationEvents;
-use Joomla\Application\Event\ApplicationEvent;
-use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Form\Form;
-use Joomla\CMS\Form\FormFactoryInterface;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Layout\LayoutHelper;
-use Joomla\CMS\Menu\AdministratorMenuItem;
 use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\CMS\Plugin\CMSPlugin;
-use Joomla\CMS\Uri\Uri;
-use Joomla\Component\RadicalMart\Administrator\Helper\ParamsHelper;
-use Joomla\Component\RadicalMart\Administrator\Helper\PluginsHelper;
-use Joomla\Component\RadicalMart\Administrator\Helper\PriceHelper;
-use Joomla\Component\RadicalMart\Administrator\Helper\UserHelper;
-use Joomla\Component\RadicalMart\Site\Model\CartModel;
 use Joomla\Database\DatabaseAwareTrait;
-use Joomla\Database\ParameterType;
-use Joomla\Event\DispatcherInterface;
-use Joomla\Event\Event;
 use Joomla\Event\SubscriberInterface;
 use Joomla\Filesystem\File;
 use Joomla\Filesystem\Folder;
