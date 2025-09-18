@@ -538,27 +538,134 @@ class RadicalMart300 extends AbstractCommand
 	protected function updateCategoriesStructure(): void
 	{
 		$this->ioStyle->title('Update categories structure');
+		$correct = true;
 
-		$this->ioStyle->text('Get columns');
+		$this->ioStyle->text('Check columns types');
 		$this->startProgressBar();
 		$db      = $this->getDatabase();
 		$table   = '#__radicalmart_categories';
 		$columns = $db->getTableColumns($table);
 		$this->finishProgressBar();
 
-		if ($columns['fields'] === 'text')
+		$update = [];
+		if ($columns['fields'] !== 'text')
 		{
-			$this->ioStyle->note('Categories structure is correct');
-
-			return;
+			$update[] = 'alter table ' . $db->quoteName($table) . 'modify ' . $db->quoteName('fields')
+				. ' text null';
 		}
 
-		$this->ioStyle->text('Update columns');
+		if (count($update) > 0)
+		{
+			$correct = false;
+			$this->ioStyle->text('Update columns');
+			$this->startProgressBar(count($update));
+			foreach ($update as $query)
+			{
+				$db->setQuery($query)->execute();
+				$this->advanceProgressBar();
+			}
+			$this->finishProgressBar();
+			$db->disconnect();
+		}
+
+		$this->databaseCreateColumns($table,
+			[
+				'totals' => 'json NULL after `fields`',
+			]
+		);
+
+		$this->ioStyle->text('Get total items');
 		$this->startProgressBar();
-		$db->setQuery('alter table ' . $db->quoteName($table) . 'modify ' . $db->quoteName('fields')
-			. ' text null')->execute();
+		$total = CommandsHelper::getTotalItems($table);
 		$this->finishProgressBar();
-		$db->disconnect();
+		if ($total === 0)
+		{
+			$this->ioStyle->note('Categories not found');
+		}
+		$select = ($total > 0) ?
+			$this->databaseGetRudimentalSelect('#__radicalmart_categories',
+				['total_products', 'total_metas'], ['id', 'totals']) : false;
+		if (!empty($select))
+		{
+			$this->ioStyle->text('Past data to new columns');
+			$this->startProgressBar($total, true);
+			$correct = false;
+			$last    = 0;
+			$limit   = 100;
+			while (true)
+			{
+				$query      = $db->getQuery(true)
+					->select($select)
+					->from($db->quoteName($table))
+					->where($db->quoteName('id') . ' > :last')
+					->bind(':last', $last, ParameterType::INTEGER)
+					->order('id asc');
+				$categories = $db->setQuery($query, 0, $limit)->loadObjectList();
+				if (empty($categories))
+				{
+					break;
+				}
+
+				foreach ($categories as $category)
+				{
+					$update         = new \stdClass();
+					$update->id     = (int) $category->id;
+					$last           = $update->id;
+					$updateCategory = false;
+
+					// Update totals
+					if (in_array('total_products', $select) || in_array('total_metas', $select))
+					{
+						$updateCategory = true;
+
+						$category->totals = new Registry($category->totals);
+						if (in_array('total_products', $select))
+						{
+							$category->totals->set('products', $category->total_products);
+						}
+						if (in_array('total_metas', $select))
+						{
+							$category->totals->set('metas', $category->total_metas);
+						}
+
+						$update->totals = $category->totals->toString();
+					}
+
+					if ($updateCategory)
+					{
+						$db->updateObject('#__radicalmart_categories', $update, 'id');
+					}
+
+					$this->advanceProgressBar();
+				}
+
+				// Clean RAM
+				$this->cleanRadicalMartRAM();
+
+				if (count($categories) < $limit)
+				{
+					break;
+				}
+			}
+			$this->finishProgressBar();
+
+			// Drop columns in products database
+			$this->databaseDropColumns($table,
+				[
+					'total_products',
+					'total_metas',
+				],
+				[
+					'idx_total_products',
+					'idx_total_metas',
+				]
+			);
+		}
+
+		if ($correct)
+		{
+			$this->ioStyle->note('Categories structure is correct');
+		}
 	}
 
 	/**
