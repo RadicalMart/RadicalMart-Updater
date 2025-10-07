@@ -190,6 +190,7 @@ class RadicalMart300 extends AbstractCommand
 				'categories_additional' => 'text NULL after `category_route`',
 				'categories_all'        => 'text NULL after `categories_additional`',
 				'meta_variability'      => 'int(10) unsigned NOT NULL DEFAULT 0 after `categories_all`',
+				'changelogs'            => 'json NULL after `params`',
 			],
 			[
 				'idx_meta_variability' => ['`meta_variability`']
