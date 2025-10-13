@@ -14,6 +14,7 @@ namespace Joomla\Plugin\RadicalMart\Updater\Console;
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Date\Date;
+use Joomla\CMS\Uri\Uri;
 use Joomla\Component\RadicalMart\Administrator\Console\AbstractCommand;
 use Joomla\Component\RadicalMart\Administrator\Helper\CommandsHelper;
 use Joomla\Database\ParameterType;
@@ -64,15 +65,16 @@ class RadicalMart300 extends AbstractCommand
 	 * @since __DEPLOY_VERSION__
 	 */
 	protected array $methods = [
-		'updateAlphaStructures',
-		'updateComponentParams',
-		'updateUsersColumns',
-		'updateProductsStructure',
-		'updateMetasStructure',
-		'updateCategoriesStructure',
-		'updateFieldsStructure',
-		'resaveProducts',
-		'resaveMetas',
+//		'updateAlphaStructures',
+//		'updateComponentParams',
+//		'updateUsersColumns',
+//		'updateProductsStructure',
+//		'updateMetasStructure',
+//		'updateCategoriesStructure',
+//		'updateFieldsStructure',
+		'updateMenuItems',
+//		'resaveProducts',
+//		'resaveMetas',
 	];
 
 	/**
@@ -726,11 +728,89 @@ class RadicalMart300 extends AbstractCommand
 	 *
 	 * @since __DEPLOY_VERSION__
 	 */
-	protected function resaveProducts(): void
+	protected function resaveMetas(): void
 	{
-		$this->ioStyle->title('Resave products items');
+		$this->ioStyle->title('Resave meta products items');
 
-		$this->resaveItems('#__radicalmart_products', 'Product');
+		$this->resaveItems('#__radicalmart_metas', 'Meta');
+	}
+
+	/**
+	 * Method to change menu items types.
+	 *
+	 * @since __DEPLOY_VERSION__
+	 */
+	protected function updateMenuItems(): void
+	{
+		$this->ioStyle->title('Update menu products items');
+
+		$this->ioStyle->text('Get total items');
+		$this->startProgressBar(1, true);
+		$db    = $this->getDatabase();
+		$query = $db->createQuery()
+			->select('COUNT(id)')
+			->from($db->quoteName('#__menu'))
+			->where($db->quoteName('type') . ' = ' . $db->quote('component'))
+			->where($db->quoteName('link') . ' LIKE ' . $db->quote('%option=com_radicalmart%'))
+			->where($db->quoteName('link') . ' LIKE ' . $db->quote('%view=categories%'));
+		$total = $db->setQuery($query)->loadResult();
+		$this->finishProgressBar();
+
+		if ($total === 0)
+		{
+			$this->ioStyle->note('Legacy menu items not found!');
+
+			return;
+		}
+
+		$this->ioStyle->text('Change views');
+		$this->startProgressBar($total, true);
+		$last  = 0;
+		$limit = 1;
+		while (true)
+		{
+			$query = $db->createQuery()
+				->select(['id', 'link', 'params'])
+				->from($db->quoteName('#__menu'))
+				->where($db->quoteName('type') . ' = ' . $db->quote('component'))
+				->where($db->quoteName('link') . ' LIKE ' . $db->quote('%option=com_radicalmart%'))
+				->where($db->quoteName('link') . ' LIKE ' . $db->quote('%view=categories%'))
+				->where($db->quoteName('id') . ' > :last')
+				->bind(':last', $last, ParameterType::INTEGER);
+
+			$items = $db->setQuery($query, 0, $limit)->loadObjectList();
+			$count = count($items);
+			if ($count === 0)
+			{
+				break;
+			}
+			foreach ($items as $item)
+			{
+				$last = (int) $item->id;
+
+				$uri = Uri::getInstance($item->link);
+				$uri->setVar('view', 'category');
+				$layout = $uri->getVar('layout', 'categories');
+				$uri->setVar('layout', $layout);
+				$item->link = $uri->toString();
+
+				$item->params = new Registry($item->params);
+				$item->params->set('view_categories_layout', $layout);
+				$item->params->set('view_products_layout', '_:default');
+				$item->params = $item->params->toString();
+
+				$db->updateObject('#__menu', $item, 'id');
+
+				$this->advanceProgressBar();
+			}
+
+			$db->disconnect();
+			if ($count < $limit)
+			{
+				break;
+			}
+		}
+		$this->finishProgressBar();
 	}
 
 	/**
@@ -740,10 +820,10 @@ class RadicalMart300 extends AbstractCommand
 	 *
 	 * @since __DEPLOY_VERSION__
 	 */
-	protected function resaveMetas(): void
+	protected function resaveProducts(): void
 	{
-		$this->ioStyle->title('Resave meta products items');
+		$this->ioStyle->title('Resave products items');
 
-		$this->resaveItems('#__radicalmart_metas', 'Meta');
+		$this->resaveItems('#__radicalmart_products', 'Product');
 	}
 }
