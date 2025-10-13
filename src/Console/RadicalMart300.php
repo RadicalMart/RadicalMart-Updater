@@ -65,16 +65,16 @@ class RadicalMart300 extends AbstractCommand
 	 * @since __DEPLOY_VERSION__
 	 */
 	protected array $methods = [
-//		'updateAlphaStructures',
-//		'updateComponentParams',
-//		'updateUsersColumns',
-//		'updateProductsStructure',
-//		'updateMetasStructure',
-//		'updateCategoriesStructure',
-//		'updateFieldsStructure',
+		'updateAlphaStructures',
+		'updateComponentParams',
+		'updateUsersColumns',
+		'updateProductsStructure',
+		'updateMetasStructure',
+		'updateCategoriesStructure',
+		'updateFieldsStructure',
 		'updateMenuItems',
-//		'resaveProducts',
-//		'resaveMetas',
+		'resaveProducts',
+		'resaveMetas',
 	];
 
 	/**
