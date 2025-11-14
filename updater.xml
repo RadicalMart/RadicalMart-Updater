@@ -2,12 +2,12 @@
 <extension type="plugin" group="radicalmart" method="upgrade">
 	<name>PLG_RADICALMART_UPDATER</name>
 	<author>RadicalMart Team</author>
-	<creationDate>October 2025</creationDate>
+	<creationDate>November 2025</creationDate>
 	<copyright>Copyright © 2025 RadicalMart. All rights reserved.</copyright>
 	<license>https://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>info@radicalmart.ru</authorEmail>
 	<authorUrl>https://radicalmart.ru/</authorUrl>
-	<version>2.9.10-dev</version>
+	<version>2.9.11-dev</version>
 	<description>PLG_RADICALMART_UPDATER_DESCRIPTION</description>
 	<namespace path="src">Joomla\Plugin\RadicalMart\Updater</namespace>
 	<scriptfile>script.php</scriptfile>
