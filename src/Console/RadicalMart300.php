@@ -699,7 +699,7 @@ class RadicalMart300 extends AbstractCommand
 		$this->databaseCreateColumns($table,
 			[
 				'fieldset_administrator' => 'int(11) unsigned NOT NULL DEFAULT 0 after `plugin`',
-				'fieldset_site'          => 'int(11) unsigned NOT NULL DEFAULT 0 after `fieldset_site`',
+				'fieldset_site'          => 'int(11) unsigned NOT NULL DEFAULT 0 after `fieldset_administrator`',
 			],
 			[
 				'idx_fieldset_administrator' => ['`fieldset_administrator`'],
