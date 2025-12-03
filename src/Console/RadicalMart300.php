@@ -496,11 +496,14 @@ class RadicalMart300 extends AbstractCommand
 				}
 
 				$products_ids = ArrayHelper::toInteger(ArrayHelper::getColumn($meta->products, 'id'));
-				$query        = $db->getQuery(true)
-					->update($db->quoteName('#__radicalmart_products'))
-					->set($db->quoteName('meta_variability') . ' = ' . $meta->id)
-					->whereIn($db->quoteName('id'), $products_ids);
-				$db->setQuery($query)->execute();
+				if (count($products_ids) > 0)
+				{
+					$query = $db->getQuery(true)
+						->update($db->quoteName('#__radicalmart_products'))
+						->set($db->quoteName('meta_variability') . ' = ' . $meta->id)
+						->whereIn($db->quoteName('id'), $products_ids);
+					$db->setQuery($query)->execute();
+				}
 
 				$this->advanceProgressBar();
 			}

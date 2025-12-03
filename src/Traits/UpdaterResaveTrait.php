@@ -82,7 +82,7 @@ trait UpdaterResaveTrait
 				if ($result === false)
 				{
 					$message = [];
-					foreach ($model->getErrors() as $error)
+					foreach ($adminModel->getErrors() as $error)
 					{
 						$message[] = ($error instanceof \Exception) ? $error->getMessage() : $error;
 					}
@@ -92,7 +92,7 @@ trait UpdaterResaveTrait
 
 				$item  = null;
 				$data  = null;
-				$model = null;
+				$adminModel = null;
 
 				$this->advanceProgressBar();
 			}
