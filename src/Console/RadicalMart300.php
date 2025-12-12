@@ -14,6 +14,7 @@ namespace Joomla\Plugin\RadicalMart\Updater\Console;
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Date\Date;
+use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Component\RadicalMart\Administrator\Console\AbstractCommand;
 use Joomla\Component\RadicalMart\Administrator\Helper\CommandsHelper;
@@ -73,6 +74,7 @@ class RadicalMart300 extends AbstractCommand
 		'updateCategoriesStructure',
 		'updateFieldsStructure',
 		'updateMenuItems',
+		'createModules',
 		'resaveProducts',
 		'resaveMetas',
 	];
@@ -813,6 +815,99 @@ class RadicalMart300 extends AbstractCommand
 				break;
 			}
 		}
+		$this->finishProgressBar();
+	}
+
+	/**
+	 * Method to create administrator modules.
+	 *
+	 * @throws \Exception
+	 *
+	 * @since __DEPLOY_VERSION__
+	 */
+	protected function createModules(): void
+	{
+		$this->ioStyle->title('Create administrator modules');
+
+		$position = 'cpanel-radicalmart';
+
+		$this->ioStyle->text('Get exists modules');
+		$this->startProgressBar(1, true);
+		$db     = $this->getDatabase();
+		$query  = $db->getQuery(true)
+			->select('note')
+			->from($db->quoteName('#__modules'))
+			->where($db->quoteName('position') . ' = ' . $db->quote('cpanel-radicalmart'))
+			->where($db->quoteName('module') . ' = ' . $db->quote('mod_radicalmart_analytics'))
+			->where($db->quoteName('note') . ' LIKE ' . $db->quote('%created_%'));
+		$exists = $db->setQuery($query)->loadColumn();
+		$this->finishProgressBar();
+
+		$modules = [
+			'com_radicalmart.orders.count'          => 'RadicalMart Analytics: Orders Count',
+			'com_radicalmart.orders.sum'            => 'RadicalMart Analytics: Orders Sum',
+			'com_radicalmart.orders.average_bill'   => 'RadicalMart Analytics: Orders Average Bill',
+			'com_radicalmart.orders.products_count' => 'RadicalMart Analytics: Orders Products Count',
+		];
+
+		if (count($exists) === count($modules))
+		{
+			$this->ioStyle->note('Modules already created');
+
+			return;
+		}
+
+		$this->ioStyle->text('Create modules');
+		$this->startProgressBar(count($modules) - count($exists), true);
+		$module = [
+			'id'        => 0,
+			'module'    => 'mod_radicalmart_analytics',
+			'published' => 1,
+			'client_id' => 1,
+			'position'  => $position,
+			'access'    => 1,
+			'ordering'  => 1,
+			'language'  => '*',
+			'params'    => [
+				'period'          => '7',
+				'detailing'       => 'day',
+				'layout'          => '_:default',
+				'moduleclass_sfx' => '',
+				'module_tag'      => 'div',
+				'bootstrap_size'  => 12,
+				'header_tag'      => 'h4',
+				'header_class'    => '',
+				'style'           => ''
+			]
+		];
+
+		// Get modules component factory.
+		/** @var \Joomla\CMS\MVC\Factory\MVCFactoryInterface $factory */
+		$factory = Factory::getApplication()->bootComponent('modules')->getMVCFactory();
+		foreach ([
+			         'com_radicalmart.orders.count'          => 'RadicalMart Analytics: Orders Count',
+			         'com_radicalmart.orders.sum'            => 'RadicalMart Analytics: Orders Sum',
+			         'com_radicalmart.orders.average_bill'   => 'RadicalMart Analytics: Orders Average Bill',
+			         'com_radicalmart.orders.products_count' => 'RadicalMart Analytics: Orders Products Count',
+		         ] as $analytic => $title)
+		{
+			$note = 'created_' . $analytic;
+			if (in_array($note, $exists))
+			{
+				continue;
+			}
+
+			$module['title']              = $title;
+			$module['note']               = $note;
+			$module['params']['analytic'] = $analytic;
+
+			/** @var \Joomla\Component\Modules\Administrator\Model\ModuleModel $model */
+			$model = $factory->createModel('Module', 'Administrator');
+			$model->save($module);
+
+			$this->advanceProgressBar();
+		}
+
 		$this->finishProgressBar();
 	}
 
