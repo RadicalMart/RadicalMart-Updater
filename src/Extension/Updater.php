@@ -2,7 +2,7 @@
 /*
  * @package     RadicalMart Updater Plugin
  * @subpackage  plg_radicalmart_updater
- * @version     __DEPLOY_VERSION__
+ * @version     3.0.0
  * @author      RadicalMart Team - radicalmart.ru
  * @copyright   Copyright (c) 2025 RadicalMart. All rights reserved.
  * @license     GNU/GPL license: https://www.gnu.org/copyleft/gpl.html
@@ -32,7 +32,7 @@ class Updater extends CMSPlugin implements SubscriberInterface
 	 *
 	 * @var    bool
 	 *
-	 * @since  __DEPLOY_VERSION__
+	 * @since  3.0.0
 	 */
 	protected $autoloadLanguage = true;
 
@@ -41,7 +41,7 @@ class Updater extends CMSPlugin implements SubscriberInterface
 	 *
 	 * @return  array
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   3.0.0
 	 */
 	public static function getSubscribedEvents(): array
 	{
@@ -56,7 +56,7 @@ class Updater extends CMSPlugin implements SubscriberInterface
 	 * @param   array     $commands  Updated commands array.
 	 * @param   Registry  $params    RadicalMart params.
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 3.0.0
 	 */
 	public function onRadicalMartRegisterCLICommands(array &$commands, Registry $params): void
 	{

@@ -2,7 +2,7 @@
 /*
  * @package     RadicalMart Updater Plugin
  * @subpackage  plg_radicalmart_updater
- * @version     __DEPLOY_VERSION__
+ * @version     3.0.0
  * @author      RadicalMart Team - radicalmart.ru
  * @copyright   Copyright (c) 2025 RadicalMart. All rights reserved.
  * @license     GNU/GPL license: https://www.gnu.org/copyleft/gpl.html
@@ -23,7 +23,7 @@ trait UpdaterParamsTrait
 	 *
 	 * @param   array  $mapping  Params move mapping [src=>dest].
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 3.0.0
 	 */
 	protected function paramsMoveParams(array $mapping = []): void
 	{

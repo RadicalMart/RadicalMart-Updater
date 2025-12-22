@@ -2,7 +2,7 @@
 /*
  * @package     RadicalMart Updater Plugin
  * @subpackage  plg_radicalmart_updater
- * @version     __DEPLOY_VERSION__
+ * @version     3.0.0
  * @author      RadicalMart Team - radicalmart.ru
  * @copyright   Copyright (c) 2025 RadicalMart. All rights reserved.
  * @license     GNU/GPL license: https://www.gnu.org/copyleft/gpl.html
@@ -36,7 +36,7 @@ class RadicalMart300 extends AbstractCommand
 	 *
 	 * @var    string|null
 	 *
-	 * @since  __DEPLOY_VERSION__
+	 * @since  3.0.0
 	 */
 	protected static $defaultName = 'radicalmart:updater:3.0.0';
 
@@ -45,7 +45,7 @@ class RadicalMart300 extends AbstractCommand
 	 *
 	 * @var   string
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 3.0.0
 	 */
 	protected string $commandText = 'Radicalmart Updater: Update to 3.0.0 version';
 
@@ -54,7 +54,7 @@ class RadicalMart300 extends AbstractCommand
 	 *
 	 * @var   string
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 3.0.0
 	 */
 	protected string $commandDescription = 'run script for update RadicalMart from 2.0.0 to 3.0.0';
 
@@ -63,7 +63,7 @@ class RadicalMart300 extends AbstractCommand
 	 *
 	 * @var  array
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 3.0.0
 	 */
 	protected array $methods = [
 		'updateAlphaStructures',
@@ -84,7 +84,7 @@ class RadicalMart300 extends AbstractCommand
 	 *
 	 * @throws \Exception
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 3.0.0
 	 */
 	protected function updateAlphaStructures(): void
 	{
@@ -106,7 +106,7 @@ class RadicalMart300 extends AbstractCommand
 	 *
 	 * @throws \Exception
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 3.0.0
 	 */
 	protected function updateComponentParams(): void
 	{
@@ -126,7 +126,7 @@ class RadicalMart300 extends AbstractCommand
 	/**
 	 * Method to remove unsigned from created_by and modified_by.
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 3.0.0
 	 */
 	protected function updateUsersColumns(): void
 	{
@@ -180,7 +180,7 @@ class RadicalMart300 extends AbstractCommand
 	 * @throws \Exception
 	 *
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 3.0.0
 	 */
 	protected function updateProductsStructure(): void
 	{
@@ -337,7 +337,7 @@ class RadicalMart300 extends AbstractCommand
 	 *
 	 * @throws \Exception
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 3.0.0
 	 */
 	protected function updateMetasStructure(): void
 	{
@@ -541,7 +541,7 @@ class RadicalMart300 extends AbstractCommand
 	 *
 	 * @throws \Exception
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 3.0.0
 	 */
 	protected function updateCategoriesStructure(): void
 	{
@@ -681,7 +681,7 @@ class RadicalMart300 extends AbstractCommand
 	 *
 	 * @throws \Exception
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 3.0.0
 	 */
 	protected function updateFieldsStructure(): void
 	{
@@ -731,7 +731,7 @@ class RadicalMart300 extends AbstractCommand
 	 *
 	 * @throws \Exception
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 3.0.0
 	 */
 	protected function resaveMetas(): void
 	{
@@ -743,7 +743,7 @@ class RadicalMart300 extends AbstractCommand
 	/**
 	 * Method to change menu items types.
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 3.0.0
 	 */
 	protected function updateMenuItems(): void
 	{
@@ -823,7 +823,7 @@ class RadicalMart300 extends AbstractCommand
 	 *
 	 * @throws \Exception
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 3.0.0
 	 */
 	protected function createModules(): void
 	{
@@ -916,7 +916,7 @@ class RadicalMart300 extends AbstractCommand
 	 *
 	 * @throws \Exception
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 3.0.0
 	 */
 	protected function resaveProducts(): void
 	{

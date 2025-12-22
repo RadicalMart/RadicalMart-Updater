@@ -2,7 +2,7 @@
 /*
  * @package     RadicalMart Updater Plugin
  * @subpackage  plg_radicalmart_updater
- * @version     __DEPLOY_VERSION__
+ * @version     3.0.0
  * @author      RadicalMart Team - radicalmart.ru
  * @copyright   Copyright (c) 2025 RadicalMart. All rights reserved.
  * @license     GNU/GPL license: https://www.gnu.org/copyleft/gpl.html
@@ -13,22 +13,14 @@
 
 use Joomla\CMS\Application\AdministratorApplication;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\Installer\InstallerAdapter;
 use Joomla\CMS\Installer\InstallerScriptInterface;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Log\Log;
-use Joomla\CMS\Version;
 use Joomla\Database\DatabaseDriver;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
-use Joomla\Filesystem\Folder;
-use Joomla\Filesystem\File;
-use Joomla\Filesystem\Path;
-use Joomla\Registry\Registry;
 
 return new class () implements ServiceProviderInterface {
-	public function register(Container $container)
+	public function register(Container $container): void
 	{
 		$container->set(InstallerScriptInterface::class,
 			new class ($container->get(AdministratorApplication::class)) implements InstallerScriptInterface {
@@ -37,7 +29,7 @@ return new class () implements ServiceProviderInterface {
 				 *
 				 * @var  AdministratorApplication
 				 *
-				 * @since  __DEPLOY_VERSION__
+				 * @since  3.0.0
 				 */
 				protected AdministratorApplication $app;
 
@@ -46,7 +38,7 @@ return new class () implements ServiceProviderInterface {
 				 *
 				 * @var   DatabaseDriver
 				 *
-				 * @since  __DEPLOY_VERSION__
+				 * @since  3.0.0
 				 */
 				protected DatabaseDriver $db;
 
@@ -55,7 +47,7 @@ return new class () implements ServiceProviderInterface {
 				 *
 				 * @var string
 				 *
-				 * @since __DEPLOY_VERSION__
+				 * @since 3.0.0
 				 */
 				protected string $constant = "";
 
@@ -64,7 +56,7 @@ return new class () implements ServiceProviderInterface {
 				 *
 				 * @var  array
 				 *
-				 * @since  __DEPLOY_VERSION__
+				 * @since  3.0.0
 				 */
 				protected array $updateMethods = [];
 
@@ -73,7 +65,7 @@ return new class () implements ServiceProviderInterface {
 				 *
 				 * @param   AdministratorApplication  $app  The application object.
 				 *
-				 * @since __DEPLOY_VERSION__
+				 * @since 3.0.0
 				 */
 				public function __construct(AdministratorApplication $app)
 				{
@@ -88,7 +80,7 @@ return new class () implements ServiceProviderInterface {
 				 *
 				 * @return  boolean  True on success
 				 *
-				 * @since   __DEPLOY_VERSION__
+				 * @since   3.0.0
 				 */
 				public function install(InstallerAdapter $adapter): bool
 				{
@@ -104,7 +96,7 @@ return new class () implements ServiceProviderInterface {
 				 *
 				 * @return  boolean  True on success
 				 *
-				 * @since   __DEPLOY_VERSION__
+				 * @since   3.0.0
 				 */
 				public function update(InstallerAdapter $adapter): bool
 				{
@@ -118,7 +110,7 @@ return new class () implements ServiceProviderInterface {
 				 *
 				 * @return  boolean  True on success
 				 *
-				 * @since   __DEPLOY_VERSION__
+				 * @since   3.0.0
 				 */
 				public function uninstall(InstallerAdapter $adapter): bool
 				{
@@ -133,7 +125,7 @@ return new class () implements ServiceProviderInterface {
 				 *
 				 * @return  boolean  True on success
 				 *
-				 * @since   __DEPLOY_VERSION__
+				 * @since   3.0.0
 				 */
 				public function preflight(string $type, InstallerAdapter $adapter): bool
 				{
@@ -148,7 +140,7 @@ return new class () implements ServiceProviderInterface {
 				 *
 				 * @return  boolean  True on success
 				 *
-				 * @since   __DEPLOY_VERSION__
+				 * @since   3.0.0
 				 */
 				public function postflight(string $type, InstallerAdapter $adapter): bool
 				{
@@ -176,9 +168,9 @@ return new class () implements ServiceProviderInterface {
 				 *
 				 * @param   InstallerAdapter  $adapter  Parent object calling object.
 				 *
-				 * @since  __DEPLOY_VERSION__
+				 * @since  3.0.0
 				 */
-				protected function enablePlugin(InstallerAdapter $adapter)
+				protected function enablePlugin(InstallerAdapter $adapter): void
 				{
 					// Prepare plugin object
 					$plugin          = new \stdClass();

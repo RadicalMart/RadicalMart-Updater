@@ -7,7 +7,7 @@
 	<license>https://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>info@radicalmart.ru</authorEmail>
 	<authorUrl>https://radicalmart.ru/</authorUrl>
-	<version>2.9.20-dev</version>
+	<version>3.0.0</version>
 	<description>PLG_RADICALMART_UPDATER_DESCRIPTION</description>
 	<namespace path="src">Joomla\Plugin\RadicalMart\Updater</namespace>
 	<scriptfile>script.php</scriptfile>
@@ -21,10 +21,4 @@
 		<folder>services</folder>
 		<folder plugin="updater">src</folder>
 	</files>
-	<config>
-		<fields name="params">
-			<fieldset name="basic">
-			</fieldset>
-		</fields>
-	</config>
 </extension>

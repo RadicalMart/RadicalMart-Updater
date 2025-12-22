@@ -2,7 +2,7 @@
 /*
  * @package     RadicalMart Updater Plugin
  * @subpackage  plg_radicalmart_updater
- * @version     __DEPLOY_VERSION__
+ * @version     3.0.0
  * @author      RadicalMart Team - radicalmart.ru
  * @copyright   Copyright (c) 2025 RadicalMart. All rights reserved.
  * @license     GNU/GPL license: https://www.gnu.org/copyleft/gpl.html
@@ -27,7 +27,7 @@ trait UpdaterDatabaseTrait
 	 * @param   array   $newColumns  New columns array.
 	 * @param   array   $newIndexes  New indexes array.
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 3.0.0
 	 */
 	protected function databaseCreateColumns(string $table, array $newColumns = [], array $newIndexes = []): void
 	{
@@ -72,7 +72,7 @@ trait UpdaterDatabaseTrait
 	 * @param   array   $dropColumns  Drop columns array.
 	 * @param   array   $dropIndexes  Drop indexes array.
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 3.0.0
 	 */
 	protected function databaseDropColumns(string $table, array $dropColumns = [], array $dropIndexes = []): void
 	{
@@ -116,7 +116,7 @@ trait UpdaterDatabaseTrait
 	 *
 	 * @param   array  $tables  Tables names array.
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 3.0.0
 	 */
 	protected function databaseDropTables(array $tables = []): void
 	{
@@ -153,7 +153,7 @@ trait UpdaterDatabaseTrait
 	 *
 	 * @return bool|array Select columns array if rudimental exists, false if not.
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 3.0.0
 	 */
 	protected function databaseGetRudimentalSelect(string $table, array $rudimental, array $base = []): bool|array
 	{
