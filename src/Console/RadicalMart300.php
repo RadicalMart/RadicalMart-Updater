@@ -434,7 +434,7 @@ class RadicalMart300 extends AbstractCommand
 				if (empty($meta->created))
 				{
 					$updateMeta    = true;
-					$meta->created = (new Date(time()))->toSql();
+					$update->created = (new Date(time()))->toSql();
 				}
 
 				$variability_fields = $meta->params->get('variability_fields', false);
