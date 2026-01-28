@@ -4,7 +4,7 @@
  * @subpackage  plg_radicalmart_updater
  * @version     __DEPLOY_VERSION__
  * @author      RadicalMart Team - radicalmart.ru
- * @copyright   Copyright (c) 2025 RadicalMart. All rights reserved.
+ * @copyright   Copyright (c) 2026 RadicalMart. All rights reserved.
  * @license     GNU/GPL license: https://www.gnu.org/copyleft/gpl.html
  * @link        https://radicalmart.ru/
  */
@@ -31,7 +31,7 @@ return new class implements ServiceProviderInterface {
 	 *
 	 * @since   3.0.0
 	 */
-	public function register(Container $container)
+	public function register(Container $container): void
 	{
 		// Register MVCFactory
 		$container->registerServiceProvider(new MVCFactory('Joomla\\Component\\RadicalMart'));
