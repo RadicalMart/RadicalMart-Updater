@@ -113,12 +113,17 @@ class RadicalMart3027 extends AbstractCommand
 					continue;
 				}
 
-				$query              = $db->getQuery(true)
+				$query    = $db->getQuery(true)
 					->select(['id', 'user', 'contacts'])
 					->from($db->quoteName('#__radicalmart_customers'))
 					->where($db->quoteName('id') . ' = :last')
 					->bind(':last', $last, ParameterType::INTEGER);
-				$customer           = $db->setQuery($query, 0, 1)->loadObject();
+				$customer = $db->setQuery($query, 0, 1)->loadObject();
+				if (empty($customer))
+				{
+					$this->advanceProgressBar();
+					continue;
+				}
 				$customer->user     = new Registry($customer->user);
 				$customer->contacts = new Registry($customer->contacts);
 
