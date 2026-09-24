@@ -112,10 +112,6 @@ class RadicalMart3027 extends AbstractCommand
 					$this->advanceProgressBar();
 					continue;
 				}
-				if ($last !== 17641)
-				{
-					continue;
-				}
 
 				$query              = $db->getQuery(true)
 					->select(['id', 'user', 'contacts'])
